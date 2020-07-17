@@ -54,4 +54,22 @@ app.get('/shifts', (request, response) => {
 
 app.get('/orders', _getData('Orders'));
 
+app.get('/orderDetails', (request, response) => {
+    if (typeof request.query.orderid === 'undefined') {
+        response.send([])
+    } else {
+        var orderid = parseInt(request.query.orderid)
+        var tableName = 'Orders'
+        var clause = { name: 'OrderId', value: orderid }
+        var query = `select top 1 * from ${tableName} where ${clause.name}=${clause.value}`;
+        console.log(query)
+        sql.query(connectionString, query, function (err, results) {
+            if (err) {
+                return console.error('error during query', err)
+            }
+            response.send(results[0]);
+        })
+    }
+})
+
 app.listen(apiPort, () => console.log(`Server running on ${apiPort}`));
