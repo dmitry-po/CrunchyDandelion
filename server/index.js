@@ -72,4 +72,22 @@ app.get('/orderDetails', (request, response) => {
     }
 })
 
+app.get('/orderLines', (request, response) => {
+    if (typeof request.query.orderid === 'undefined') {
+        response.send([])
+    } else {
+        var orderid = parseInt(request.query.orderid)
+        var tableName = 'OrderLines'
+        var clause = { name: 'OrderId', value: orderid }
+        var query = `select * from ${tableName} where ${clause.name}=${clause.value}`;
+        console.log(query)
+        sql.query(connectionString, query, function (err, results) {
+            if (err) {
+                return console.error('error during query', err)
+            }
+            response.send(results);
+        })
+    }
+})
+
 app.listen(apiPort, () => console.log(`Server running on ${apiPort}`));
