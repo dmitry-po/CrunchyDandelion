@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Picker, FlatList, Dimensions } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
-const AppWidth = SCREEN_WIDTH > 1000 ? 975 : SCREEN_WIDTH;
-const numColumns = Math.floor(AppWidth / 200);
+import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { serverAddress } from '../config';
+import OrderDetailsModal from '../shared/OrderDetails';
+import NavigationBar from '../shared/NavigationBar';
 
 export default function OpenOrdersPage() {
-    // data
     const [orders, setOrders] = useState([])
+
+    // popup -->
+    const [showDetails, setShowDetails] = useState(false)
+    const [selectedOrder, setSelectedOrder] = useState('')
+    const hidePopup = () => setShowDetails(false);
+    const popupButtons = [
+        { title: 'НАЗАД', onPressEventHandler: hidePopup },
+        { title: 'ВЗЯТЬ', onPressEventHandler: () => console.log('take') },
+    ]
+    // popup <--
+
+    const orderOnPresshandler = (orderId) => {
+        setSelectedOrder(orderId);
+        setShowDetails(true);
+    }
 
     // data fetch
     async function getOrders() {
-        let url = 'http://192.168.0.102:3000/orders/'
+        let url = serverAddress + '/orders/'
         let response = await fetch(url)
         let data = await response.json()
         setOrders(data);
@@ -22,17 +34,8 @@ export default function OpenOrdersPage() {
         getOrders();
     }, [])
 
-    // navigation
-    const openShifts = () => { }
-    const openAllOrders = () => { }
-    const openMyOrders = () => { }
-
-    // layout
-    return (
-        <View style={styles.page}>
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>Открытые заказы</Text>
-            </View>
+    const OrdersView = ({ orders }) => {
+        return (
             <FlatList
                 data={orders}
                 numColumns={1}
@@ -41,31 +44,28 @@ export default function OpenOrdersPage() {
                     return (
                         <TouchableOpacity
                             activeOpacity={0.5}
-                            style={styles.card}>
+                            style={styles.card}
+                            onPress={() => orderOnPresshandler(item.OrderId)}>
                             <Text style={styles.cardHeader}>Заказ {item.OrderId}</Text>
-                            {/*<Text style={{...styles.cardText, fontWeight:'bold'}}>Адрес доставки:</Text>*/}
-
                             <Text style={styles.cardText}>{item.DeliveryAddress}</Text>
-                            <Text style={styles.cardText}>{item.DeliveryTime.slice(11, 16)}</Text>
+                            <Text style={styles.cardText}>{'Ожидаемое время доставки: ' + item.DeliveryTime.slice(11, 16)}</Text>
                         </TouchableOpacity>
 
                     )
                 }}
             />
-            <View style={styles.navigationBar} >
-                <TouchableOpacity onPress={openShifts} style={styles.navigationButtons}>
-                    <MaterialIcons name='date-range' color='#fff' size={24} />
-                    <Text style={styles.navigationTitles}>Смены</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={openShifts} style={styles.navigationButtons}>
-                    <MaterialIcons name='format-list-numbered' color='#fff' size={24} />
-                    <Text style={styles.navigationTitles}>Заказы</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={openShifts} style={styles.navigationButtons}>
-                    <MaterialIcons name='shopping-cart' color='#fff' size={24} />
-                    <Text style={styles.navigationTitles}>Мои заказы</Text>
-                </TouchableOpacity>
+        )
+    }
+
+    // layout
+    return (
+        <View style={styles.page}>
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>Открытые заказы</Text>
             </View>
+            < OrdersView orders={orders} />
+            < NavigationBar />
+            {showDetails && < OrderDetailsModal orderId={selectedOrder} buttons={popupButtons} hideEventHandler={hidePopup} />}
         </View>
     )
 }
@@ -87,25 +87,6 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         //fontWeight:'bold',
         fontSize: 20
-    },
-    navigationBar: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        backgroundColor: 'black',
-        alignItems: 'center',
-        position: 'absolute',
-        bottom: 0,
-        height: 48,
-        width: '100%'
-    },
-    navigationButtons: {
-        padding: 8,
-        alignItems: 'center',
-        flex: 1
-    },
-    navigationTitles: {
-        color: '#fff',
-        fontSize: 10
     },
     card: {
         shadowColor: '#000',

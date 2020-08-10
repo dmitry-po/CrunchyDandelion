@@ -3,14 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native
 import { MaterialIcons } from '@expo/vector-icons';
 import { serverAddress } from '../config';
 
-export default function OrderDetailsModal() {
-    const orderId = 1;
-    const buttons = [
-        { title: 'НАЗАД', onPressEventHandler: () => console.log('back') },
-        { title: 'ВЗЯТЬ', onPressEventHandler: () => console.log('take') },
-    ]
-    const hideEventHandler = () => console.log('hide');
-
+export default function OrderDetailsModal({orderId, buttons, hideEventHandler}) {
     const [order, setOrder] = useState({});
     const [orderLines, setOrderLines] = useState([])
     const [loading, setLoading] = useState(true);
@@ -67,9 +60,6 @@ export default function OrderDetailsModal() {
         { key: 9, name: 'Содержимое', icon: 'shopping-cart', content: OrderLinesView },
         { key: 10, name: 'Комментарий', icon: 'comment', content: order.Comment }
     ]
-
-    console.log('----')
-    console.log(typeof (OrderLinesView) === 'function')
 
     const OrderDetailsView = () => {
         if (loading) {

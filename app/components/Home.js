@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Picker, FlatList, Dimensions } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { serverAddress } from '../config';
+import NavigationBar from '../shared/NavigationBar';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const AppWidth = SCREEN_WIDTH > 1000 ? 975 : SCREEN_WIDTH;
@@ -14,7 +16,7 @@ export default function HomePage() {
 
     // data fetch
     async function getShops() {
-        let url = 'http://192.168.0.102:3000/channels/'
+        let url = serverAddress + '/channels/'
         let response = await fetch(url)
         let data = await response.json()
         console.log(data);
@@ -22,7 +24,7 @@ export default function HomePage() {
         selectShift(data[0].ChannelId);
     }
     async function getShifts(shopid) {
-        let url = 'http://192.168.0.102:3000/shifts/?channelid=' + shopid
+        let url = serverAddress + '/shifts/?channelid=' + shopid
         let response = await fetch(url)
         response = await response.json()
         setShifts(response);
@@ -37,11 +39,6 @@ export default function HomePage() {
         setSelectedShops(props);
         getShifts(props)
     }
-
-    // navigation
-    const openShifts = () => { }
-    const openAllOrders = () => { }
-    const openMyOrders = () => { }
 
     // layout
     return (
@@ -74,20 +71,7 @@ export default function HomePage() {
                     )
                 }}
             />
-            <View style={styles.navigationBar} >
-                <TouchableOpacity onPress={openShifts} style={styles.navigationButtons}>
-                    <MaterialIcons name='date-range' color='#fff' size={24} />
-                    <Text style={styles.navigationTitles}>Смены</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={openShifts} style={styles.navigationButtons}>
-                    <MaterialIcons name='format-list-numbered' color='#fff' size={24} />
-                    <Text style={styles.navigationTitles}>Заказы</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={openShifts} style={styles.navigationButtons}>
-                    <MaterialIcons name='shopping-cart' color='#fff' size={24} />
-                    <Text style={styles.navigationTitles}>Мои заказы</Text>
-                </TouchableOpacity>
-            </View>
+            < NavigationBar /> 
         </View>
     )
 }
@@ -109,25 +93,6 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         //fontWeight:'bold',
         fontSize: 20
-    },
-    navigationBar: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        backgroundColor: 'black',
-        alignItems: 'center',
-        position: 'absolute',
-        bottom: 0,
-        height: 48,
-        width: '100%'
-    },
-    navigationButtons: {
-        padding: 8,
-        alignItems: 'center',
-        flex: 1
-    },
-    navigationTitles: {
-        color: '#fff',
-        fontSize: 10
     },
     dropdownList: {
         height: 60,
