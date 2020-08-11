@@ -5,7 +5,7 @@ import OrderDetailsModal from '../shared/OrderDetails';
 import NavigationBar from '../shared/NavigationBar';
 import OrdersView from '../shared/OrdersView';
 
-export default function OpenOrdersPage() {
+export default function MyOrdersPage() {
     const [orders, setOrders] = useState([])
 
     // popup -->
@@ -14,7 +14,16 @@ export default function OpenOrdersPage() {
     const hidePopup = () => setShowDetails(false);
     const popupButtons = [
         { title: 'НАЗАД', onPressEventHandler: hidePopup },
-        { title: 'ВЗЯТЬ', onPressEventHandler: () => console.log('take') },
+        {
+            title: selectedOrder.Paid === 0 ? 'ПОДТВЕРДИТЬ ОПЛАТУ' : 'ЗАВЕРШИТЬ',
+            onPressEventHandler: () => {
+                if (selectedOrder.Paid === 0) {
+                    console.log('confirm payment')
+                } else {
+                    console.log('finish him')
+                }
+            }
+        },
     ]
     // popup <--
 
@@ -25,7 +34,7 @@ export default function OpenOrdersPage() {
 
     // data fetch
     async function getOrders() {
-        let url = serverAddress + '/orders/'
+        let url = serverAddress + '/orders/'    // change to myOrders
         let response = await fetch(url)
         let data = await response.json()
         setOrders(data);
@@ -39,7 +48,7 @@ export default function OpenOrdersPage() {
     return (
         <View style={styles.page}>
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Открытые заказы</Text>
+                <Text style={styles.headerTitle}>Мои заказы</Text>
             </View>
             < OrdersView orders={orders} onPressHandler={orderOnPressHandler} />
             < NavigationBar />

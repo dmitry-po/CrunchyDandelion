@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { serverAddress } from '../config';
 
-export default function OrderDetailsModal({orderId, buttons, hideEventHandler}) {
+export default function OrderDetailsModal({ selectedOrder, buttons, hideEventHandler }) {
+    const orderId = selectedOrder.OrderId
     const [order, setOrder] = useState({});
     const [orderLines, setOrderLines] = useState([])
     const [loading, setLoading] = useState(true);
@@ -100,16 +101,19 @@ export default function OrderDetailsModal({orderId, buttons, hideEventHandler}) 
     return (
         <View style={styles.canvas}>
             <View style={styles.background} onStartShouldSetResponder={hideEventHandler}></View>
-            <View style={styles.container}>
-                <View style={styles.headerContainer}>
-                    <Text style={styles.headerContainerText} > Заказ {order.OrderId}</Text>
-                    <TouchableOpacity>
-                        <MaterialIcons name='info' size={24} />
-                    </TouchableOpacity>
+            {loading && <ActivityIndicator color="#FF8217" size="large" />}
+            {!loading && (
+                <View style={styles.container}>
+                    <View style={styles.headerContainer}>
+                        <Text style={styles.headerContainerText} > Заказ {order.OrderId}</Text>
+                        <TouchableOpacity>
+                            <MaterialIcons name='info' size={24} />
+                        </TouchableOpacity>
+                    </View>
+                    < OrderDetailsView />
+                    < ButtonsView />
                 </View>
-                < OrderDetailsView />
-                < ButtonsView />
-            </View>
+            )}
         </View>
     );
 }

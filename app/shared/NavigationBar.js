@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     navigationBar: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        backgroundColor: 'black',
+        backgroundColor: '#000',
         alignItems: 'center',
         position: 'absolute',
         bottom: 0,
