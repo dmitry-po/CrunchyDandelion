@@ -15,16 +15,23 @@ export default function LoginPage() {
                 <View style={styles.card}>
                     <View style={styles.textInputContainer}>
                         {/*<MaterialIcons name='person' size={32} />*/}
-                        <TextInput style={styles.textInput} placeholder='Введите логин' />
+                        <TextInput
+                            style={styles.textInput}
+                            placeholder='Введите логин' />
                     </View>
                     <View style={styles.textInputContainer}>
                         {/*<MaterialIcons name='lock' size={32} />*/}
-                        <TextInput style={styles.textInput} placeholder='Введите пароль' secureTextEntry={true} />
+                        <TextInput
+                            style={styles.textInput}
+                            placeholder='Введите пароль'
+                            secureTextEntry={true} />
                     </View>
                     <TouchableOpacity style={styles.button} onPress={logingButton}>
                         <Text style={styles.buttonText} >ВОЙТИ</Text>
                     </TouchableOpacity>
-                    <Text onPress={forgetPasswordButton} style={styles.forgetPasswordButton}>Забыли пароль?</Text>
+                    <TouchableOpacity onPress={forgetPasswordButton}>
+                        <Text style={styles.forgetPasswordButton}>Забыли пароль?</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>

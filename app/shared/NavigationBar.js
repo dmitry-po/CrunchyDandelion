@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         position: 'absolute',
         bottom: 0,
-        height: 48,
+        height: 50,
         width: '100%'
     },
     navigationButtons: {

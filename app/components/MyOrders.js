@@ -51,7 +51,6 @@ export default function MyOrdersPage() {
                 <Text style={styles.headerTitle}>Мои заказы</Text>
             </View>
             < OrdersView orders={orders} onPressHandler={orderOnPressHandler} />
-            < NavigationBar />
             {showDetails && < OrderDetailsModal selectedOrder={selectedOrder} buttons={popupButtons} hideEventHandler={hidePopup} />}
         </View>
     )

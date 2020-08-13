@@ -1,11 +1,8 @@
 import React from 'react';
-import LoginPage from './components/Login';
-import HomePage from './components/Home';
-import OpenOrders from './components/OpenOrders';
-import OrderDetails from './components/OrderDetails';
+import AppStack from './routes/AppStack';
 
 export default function App() {
   return (
-      <OrderDetails />
+      <AppStack />
   );
 }

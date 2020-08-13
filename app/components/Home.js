@@ -8,7 +8,7 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const AppWidth = SCREEN_WIDTH > 1000 ? 975 : SCREEN_WIDTH;
 const numColumns = Math.floor(AppWidth / 200);
 
-export default function HomePage() {
+export default function HomePage({ navigation }) {
     // data
     const [shops, setShops] = useState([])
     const [selectedShop, setSelectedShops] = useState(shops[0])
@@ -40,38 +40,50 @@ export default function HomePage() {
         getShifts(props)
     }
 
+    const shiftPressHandler = () => {
+        navigation.navigate("Заказы");
+    }
+
+    const ShopsPicker = () => (
+        <View style={styles.dropdownListContainer}>
+            <Picker
+                selectedValue={selectedShop}
+                style={styles.dropdownList}
+                onValueChange={(itemValue) => selectShift(itemValue)}>
+                {shops.map(item => (<Picker.Item key={item.ChannelId} label={item.ChannelAddress} value={item.ChannelId} />))}
+            </Picker>
+        </View>
+    )
+
+    const ShiftsView = () => (
+        <FlatList
+            data={shifts}
+            numColumns={numColumns}
+            keyExtractor={(item) => item.ShiftId.toString()}
+            renderItem={({ item }) => {
+                return (
+                    <TouchableOpacity
+                        activeOpacity={0.5}
+                        style={styles.card}
+                        onPress={shiftPressHandler}>
+                        < MaterialIcons name="access-time" size={24} />
+                        <Text style={styles.cardText}> {item.ShiftTime}
+                        </Text>
+                    </TouchableOpacity>
+
+                )
+            }}
+        />
+    )
+
     // layout
     return (
         <View style={styles.page}>
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Смены</Text>
             </View>
-            <View style={styles.dropdownListContainer}>
-                <Picker
-                    selectedValue={selectedShop}
-                    style={styles.dropdownList}
-                    onValueChange={(itemValue) => selectShift(itemValue)}>
-                    {shops.map(item => (<Picker.Item key={item.ChannelId} label={item.ChannelAddress} value={item.ChannelId} />))}
-                </Picker>
-            </View>
-            <FlatList
-                data={shifts}
-                numColumns={numColumns}
-                keyExtractor={(item) => item.ShiftId.toString()}
-                renderItem={({ item }) => {
-                    return (
-                        <TouchableOpacity
-                            activeOpacity={0.5}
-                            style={styles.card}>
-                            < MaterialIcons name="access-time" size={24} />
-                            <Text style={styles.cardText}> {item.ShiftTime}
-                            </Text>
-                        </TouchableOpacity>
-
-                    )
-                }}
-            />
-            < NavigationBar /> 
+            < ShopsPicker />
+            < ShiftsView />
         </View>
     )
 }

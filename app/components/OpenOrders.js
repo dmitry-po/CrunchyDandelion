@@ -42,7 +42,6 @@ export default function OpenOrdersPage() {
                 <Text style={styles.headerTitle}>Открытые заказы</Text>
             </View>
             < OrdersView orders={orders} onPressHandler={orderOnPressHandler} />
-            < NavigationBar />
             {showDetails && < OrderDetailsModal selectedOrder={selectedOrder} buttons={popupButtons} hideEventHandler={hidePopup} />}
         </View>
     )
