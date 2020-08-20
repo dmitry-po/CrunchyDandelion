@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { useQuery } from 'react-query';
+
 import { serverAddress } from '../config';
 import OrderDetailsModal from '../shared/OrderDetails';
-import NavigationBar from '../shared/NavigationBar';
 import OrdersView from '../shared/OrdersView';
 
 export default function OpenOrdersPage() {
@@ -13,8 +14,8 @@ export default function OpenOrdersPage() {
     const [selectedOrder, setSelectedOrder] = useState('')
     const hidePopup = () => setShowDetails(false);
     const popupButtons = [
-        { title: 'НАЗАД', onPressEventHandler: hidePopup },
-        { title: 'ВЗЯТЬ', onPressEventHandler: () => console.log('take') },
+        { title: 'Назад', onPressEventHandler: hidePopup },
+        { title: 'Взять', onPressEventHandler: () => console.log('take') },
     ]
     // popup <--
 

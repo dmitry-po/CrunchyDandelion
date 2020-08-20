@@ -13,9 +13,9 @@ export default function MyOrdersPage() {
     const [selectedOrder, setSelectedOrder] = useState('')
     const hidePopup = () => setShowDetails(false);
     const popupButtons = [
-        { title: 'НАЗАД', onPressEventHandler: hidePopup },
+        { title: 'Назад', onPressEventHandler: hidePopup },
         {
-            title: selectedOrder.Paid === 0 ? 'ПОДТВЕРДИТЬ ОПЛАТУ' : 'ЗАВЕРШИТЬ',
+            title: selectedOrder.Paid === 0 ? 'Подтвердить оплату' : 'Завершить',
             onPressEventHandler: () => {
                 if (selectedOrder.Paid === 0) {
                     console.log('confirm payment')

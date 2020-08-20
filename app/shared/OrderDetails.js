@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+
 import { serverAddress } from '../config';
+import { FlatButton } from './Buttons';
 
 export default function OrderDetailsModal({ selectedOrder, buttons, hideEventHandler }) {
     const orderId = selectedOrder.OrderId
@@ -89,12 +91,8 @@ export default function OrderDetailsModal({ selectedOrder, buttons, hideEventHan
 
     const ButtonsView = () => (
         <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.leftButton} onPress={buttons[0].onPressEventHandler}>
-                <Text style={styles.leftButtonText}>{buttons[0].title}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.rightButton} onPress={buttons[1].onPressEventHandler}>
-                <Text style={styles.rightButtonText}>{buttons[1].title}</Text>
-            </TouchableOpacity>
+            <FlatButton title={buttons[0].title} onPress={buttons[0].onPressEventHandler} buttonColor="#FFF" textColor="#F25D27"/>
+            <FlatButton title={buttons[1].title} onPress={buttons[1].onPressEventHandler} buttonColor="#025159" textColor="#FFF"/>
         </View>
     )
 
@@ -106,9 +104,6 @@ export default function OrderDetailsModal({ selectedOrder, buttons, hideEventHan
                 <View style={styles.container}>
                     <View style={styles.headerContainer}>
                         <Text style={styles.headerContainerText} > Заказ {order.OrderId}</Text>
-                        <TouchableOpacity>
-                            <MaterialIcons name='info' size={24} />
-                        </TouchableOpacity>
                     </View>
                     < OrderDetailsView />
                     < ButtonsView />
@@ -172,29 +167,5 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         justifyContent: 'center',
         margin: 8
-    },
-    leftButton: {
-        backgroundColor: 'white',
-        padding: 8,
-        borderRadius: 5,
-        marginLeft: 8
-    },
-    leftButtonText: {
-        color: '#F25D27',
-        fontWeight: 'bold',
-        fontSize: 18,
-        paddingHorizontal: 12
-    },
-    rightButton: {
-        backgroundColor: '#025159',
-        padding: 8,
-        borderRadius: 5,
-        marginLeft: 8
-    },
-    rightButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 18,
-        paddingHorizontal: 12
     }
 })

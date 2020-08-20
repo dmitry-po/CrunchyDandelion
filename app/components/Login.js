@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { FlatButton } from '../shared/Buttons'
 
 export default function LoginPage() {
     const logingButton = () => { }
@@ -26,9 +26,7 @@ export default function LoginPage() {
                             placeholder='Введите пароль'
                             secureTextEntry={true} />
                     </View>
-                    <TouchableOpacity style={styles.button} onPress={logingButton}>
-                        <Text style={styles.buttonText} >ВОЙТИ</Text>
-                    </TouchableOpacity>
+                    <FlatButton title="Войти" onPress={logingButton} buttonColor="#FF8217" textColor="#FFF" style={{width: 300}} />
                     <TouchableOpacity onPress={forgetPasswordButton}>
                         <Text style={styles.forgetPasswordButton}>Забыли пароль?</Text>
                     </TouchableOpacity>
@@ -83,20 +81,6 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         fontSize: 18
         //marginLeft: 24
-    },
-    button: {
-        width: 300,
-        height: 45,
-        backgroundColor: '#FF8217',
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: 8,
-        borderRadius: 6
-    },
-    buttonText: {
-        color: '#ffffff',
-        fontWeight: 'bold',
-        fontSize: 18
     },
     forgetPasswordButton: {
         marginTop: 8,
