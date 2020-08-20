@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -6,9 +6,13 @@ import { serverAddress } from '../config';
 import OrderDetailsModal from '../shared/OrderDetails';
 import OrdersView from '../shared/OrdersView';
 
-export default function OpenOrdersPage() {
-    const [orders, setOrders] = useState([])
+const fetchOrders = async () => {
+    const url = serverAddress + '/orders/'
+    const res = await fetch(url)
+    return res.json()
+}
 
+export default function OpenOrdersPage() {
     // popup -->
     const [showDetails, setShowDetails] = useState(false)
     const [selectedOrder, setSelectedOrder] = useState('')
@@ -24,17 +28,7 @@ export default function OpenOrdersPage() {
         setShowDetails(true);
     }
 
-    // data fetch
-    async function getOrders() {
-        let url = serverAddress + '/orders/'
-        let response = await fetch(url)
-        let data = await response.json()
-        setOrders(data);
-    }
-
-    useEffect(() => {
-        getOrders();
-    }, [])
+    const { data, status } = useQuery('openOrders', fetchOrders);
 
     // layout
     return (
@@ -42,7 +36,7 @@ export default function OpenOrdersPage() {
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Открытые заказы</Text>
             </View>
-            < OrdersView orders={orders} onPressHandler={orderOnPressHandler} />
+            < OrdersView orders={data} onPressHandler={orderOnPressHandler} />
             {showDetails && < OrderDetailsModal selectedOrder={selectedOrder} buttons={popupButtons} hideEventHandler={hidePopup} />}
         </View>
     )
