@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Picker, FlatList, Dimensions } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { serverAddress } from '../config';
-import NavigationBar from '../shared/NavigationBar';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const AppWidth = SCREEN_WIDTH > 1000 ? 975 : SCREEN_WIDTH;
@@ -110,7 +109,8 @@ const styles = StyleSheet.create({
         height: 60,
         padding: 0,
         borderWidth: 0,
-        borderRadius: 6
+        borderRadius: 6,
+        //fontSize: 18,
     },
     dropdownListContainer: {
         borderWidth: 1,
@@ -118,7 +118,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         margin: 8,
         borderRadius: 6,
-        fontSize: 18,
         borderWidth: 1,
         paddingHorizontal: 0
     },
