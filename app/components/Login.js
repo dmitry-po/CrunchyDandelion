@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useContext, useRef } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { FlatButton } from '../shared/Buttons'
+import { FlatButton } from '../shared/Buttons';
+import { AuthContext } from '../context/AuthContext';
 
 export default function LoginPage() {
-    const logingButton = () => { }
+    const { login } = useContext(AuthContext);
+    const userName = useRef('');
+
+    const logingButton = () => {
+        if (userName.current.length > 0) {
+            login(userName.current);
+        }
+    }
+
     const forgetPasswordButton = () => { }
 
     return (
@@ -16,6 +25,8 @@ export default function LoginPage() {
                     <View style={styles.textInputContainer}>
                         {/*<MaterialIcons name='person' size={32} />*/}
                         <TextInput
+                            maxLength='9'
+                            onChangeText={value => {userName.current=value}}
                             style={styles.textInput}
                             placeholder='Введите логин' />
                     </View>

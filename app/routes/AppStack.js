@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -7,12 +7,11 @@ import LoginPage from '../components/Login';
 import HomePage from '../components/Home';
 import OpenOrdersPage from '../components/OpenOrders';
 import MyOrdersPage from '../components/MyOrders';
+import { AuthContext, AuthContextProvider } from '../context/AuthContext';
 
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-const isSigned = true;
 
 const SignInNavigation = () => (
     < Stack.Navigator >
@@ -53,12 +52,17 @@ const TabNavigation = () => (
     </Tab.Navigator>
 )
 
+const LoginManager = () => {
+        const { isSigned } = useContext(AuthContext);
+        return isSigned ? <TabNavigation/> : <SignInNavigation />
+}
+
 export default function AppStack() {
     return (
         <NavigationContainer>
-            {isSigned ?
-                < TabNavigation /> :
-                <SignInNavigation />}
+            <AuthContextProvider>
+                <LoginManager/>
+            </AuthContextProvider>
         </NavigationContainer>
     )
 }

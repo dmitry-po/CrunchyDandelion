@@ -9,12 +9,13 @@ const dbname = 'CrunchyDandelionApp';
 const server = '.';
 const sqldriver = 'SQL Server Native Client 11.0'
 const connectionString = `server=${server};Database=${dbname};Trusted_Connection=Yes;Driver={${sqldriver}}`;
+const authRoutes = require('./routes/authRoutes');
 
 const _getData = (tableName) => {
     return (
         (request, response) => {
             var query = `select * from ${tableName}`;
-            sql.query(connectionString, query, function (err, results) {
+            sql.query(connectionString, query, (err, results) => {
                 if (err) {
                     return console.error('error during query', err)
                 }
@@ -24,6 +25,16 @@ const _getData = (tableName) => {
     )
 }
 // database <--
+
+const _query_builder = ( { tableName, fields, clauses} ) => {
+    console.log(clauses)
+    const selectedFields = typeof(fields) === 'undefined' ? '*' : ( Array.isArray(fields) ? fields.join(', ') : fields)
+    var clauseStatement = Array.isArray(clauses) ? clauses.map(item => `${item.name} = ${item.value}`).join(' and ') : ''
+    var queryStatement = `select ${selectedFields} from ${tableName}` + ( 
+        clauseStatement.length > 0 ? ` where ${clauseStatement}` : '' )
+    console.log(queryStatement)
+    return queryStatement
+}
 
 app.use(cors());
 
@@ -52,7 +63,27 @@ app.get('/shifts', (request, response) => {
     }
 })
 
-app.get('/orders', _getData('Orders'));
+const _getData2 = ({ query, response }) => {
+    sql.query(connectionString, query, (err, results) => {
+        if (err) {
+            return console.error('error during query', err)
+        }
+        response.send(results);
+    });
+}
+
+app.get('/orders', (request, response) => {
+    const channelid = typeof(request.query.channelid) === 'undefined' ? '' : parseInt(request.query.channelid);
+    const shiftid = typeof(request.query.shiftid) === 'undefined' ? '' : parseInt(request.query.shiftid);
+    const carrierid = typeof(request.query.carrierid) === 'undefined' ? '' : request.query.carrierid;
+    const tableName = 'Orders'
+    var clauses = []
+    if (channelid != '') clauses = [...clauses, {name:'ChannelId', value:channelid}]
+    if (shiftid != '') clauses = [...clauses, {name:'ShiftId', value:shiftid}]
+    if (carrierid != '') clauses = [...clauses, {name:'CarrierId', value:carrierid}]
+    const query = _query_builder({tableName, clauses})
+    _getData2({query, response});
+});
 
 app.get('/orderDetails', (request, response) => {
     if (typeof request.query.orderid === 'undefined') {
@@ -89,5 +120,7 @@ app.get('/orderLines', (request, response) => {
         })
     }
 })
+
+app.use(authRoutes);
 
 app.listen(apiPort, () => console.log(`Server running on ${apiPort}`));

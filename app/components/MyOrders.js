@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { serverAddress } from '../config';
 import OrderDetailsModal from '../shared/OrderDetails';
-import NavigationBar from '../shared/NavigationBar';
 import OrdersView from '../shared/OrdersView';
+import { AuthContext } from '../context/AuthContext';
 
 export default function MyOrdersPage() {
     const [orders, setOrders] = useState([])
+    const { userName } = useContext(AuthContext);
 
     // popup -->
     const [showDetails, setShowDetails] = useState(false)
@@ -32,25 +33,25 @@ export default function MyOrdersPage() {
         setShowDetails(true);
     }
 
-    // data fetch
-    async function getOrders() {
-        let url = serverAddress + '/orders/'    // change to myOrders
-        let response = await fetch(url)
-        let data = await response.json()
-        setOrders(data);
-    }
-
     useEffect(() => {
-        getOrders();
+        fetch(serverAddress + `/orders/?carrierid=${userName}`)   // change to myOrders
+        .then(responce => responce.json())
+        .then(data => setOrders(data))
     }, [])
 
     // layout
+    const NoOrdersView = () => (
+        <View style={styles.noOrdersView}>
+            <Text style={styles.noOrdersText}>У Вас нет назначенных заказов</Text>
+        </View>
+    )
+
     return (
         <View style={styles.page}>
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Мои заказы</Text>
             </View>
-            < OrdersView orders={orders} onPressHandler={orderOnPressHandler} />
+            { orders.length === 0 ? (<NoOrdersView/>) : (< OrdersView orders={orders} onPressHandler={orderOnPressHandler} />)}
             {showDetails && < OrderDetailsModal selectedOrder={selectedOrder} buttons={popupButtons} hideEventHandler={hidePopup} />}
         </View>
     )
@@ -73,5 +74,13 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         //fontWeight:'bold',
         fontSize: 20
+    },
+    noOrdersView: {
+        flex: 1,
+        alignItems: 'center',
+        marginTop: 20
+    },
+    noOrdersText: {
+        fontSize: 16
     }
 })

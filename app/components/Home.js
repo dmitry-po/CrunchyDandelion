@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Picker, FlatList, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Picker, FlatList, Dimensions, Button } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { serverAddress } from '../config';
 
@@ -10,46 +10,41 @@ const numColumns = Math.floor(AppWidth / 200);
 export default function HomePage({ navigation }) {
     // data
     const [shops, setShops] = useState([])
-    const [selectedShop, setSelectedShops] = useState(shops[0])
+    const [selectedShop, setSelectedShop] = useState({ChannelId:''})
     const [shifts, setShifts] = useState([])
 
     // data fetch
-    async function getShops() {
-        let url = serverAddress + '/channels/'
-        let response = await fetch(url)
-        let data = await response.json()
-        console.log(data);
-        setShops(data);
-        selectShift(data[0].ChannelId);
-    }
-    async function getShifts(shopid) {
-        let url = serverAddress + '/shifts/?channelid=' + shopid
-        let response = await fetch(url)
-        response = await response.json()
-        setShifts(response);
-    }
-
     useEffect(() => {
-        getShops();
+        fetch(serverAddress + '/channels/')
+        .then(responce => responce.json())
+        .then(data => {
+            setShops(data);
+            setSelectedShop(data[0]);
+        })
     }, [])
 
-    const selectShift = (props) => {
-        console.log('props: ', props);
-        setSelectedShops(props);
-        getShifts(props)
+    useEffect(() => {
+        const shopId = selectedShop['ChannelId']
+        fetch(serverAddress + '/shifts/?channelid=' + shopId)
+        .then(responce => responce.json())
+        .then(data => setShifts(data))
+    }, [selectedShop])
+
+    const updateShifts = (shop) => {
+        setSelectedShop(shops.filter(item => item['ChannelId'] == shop)[0]);
     }
 
-    const shiftPressHandler = () => {
-        navigation.navigate("Заказы");
+    const shiftPressHandler = (shift) => {
+        navigation.navigate("Заказы", {shop: selectedShop, shift});
     }
 
     const ShopsPicker = () => (
         <View style={styles.dropdownListContainer}>
             <Picker
-                selectedValue={selectedShop}
+                selectedValue={selectedShop['ChannelId']}
                 style={styles.dropdownList}
-                onValueChange={(itemValue) => selectShift(itemValue)}>
-                {shops.map(item => (<Picker.Item key={item.ChannelId} label={item.ChannelAddress} value={item.ChannelId} />))}
+                onValueChange={(itemValue) => updateShifts(itemValue)}>
+                {shops.map(item => (<Picker.Item key={item['ChannelId']} label={item['ChannelAddress']} value={item['ChannelId']} />))}
             </Picker>
         </View>
     )
@@ -64,10 +59,9 @@ export default function HomePage({ navigation }) {
                     <TouchableOpacity
                         activeOpacity={0.5}
                         style={styles.card}
-                        onPress={shiftPressHandler}>
+                        onPress={ () => shiftPressHandler(item) }>
                         < MaterialIcons name="access-time" size={24} />
-                        <Text style={styles.cardText}> {item.ShiftTime}
-                        </Text>
+                        <Text style={styles.cardText}> {item.ShiftTime}</Text>
                     </TouchableOpacity>
 
                 )
